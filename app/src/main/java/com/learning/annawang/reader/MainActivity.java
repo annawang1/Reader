@@ -34,76 +34,83 @@ public class MainActivity extends AppCompatActivity {
         btnClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    File file = Environment.getExternalStorageDirectory();
-                    String path = file.getAbsolutePath() + "/Download/currency.txt";
-                    InputStream inputStream = new FileInputStream(path);
-                    InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-                    String pathOut = file.getAbsolutePath() + "/currency_out.txt";
-                    OutputStream outputStream = new FileOutputStream(pathOut, true);
-                    OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
-                    BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
-
-                    String line;
-                    int i = 0;
-
-
-                    Map<String, String> map = new HashMap<String, String>();
-                    try {
-                        // ISO code
-                        String key = "";
-                        // num
-                        String value = "";
-                        String comments;
-                        StringBuilder stringBuilder = new StringBuilder();
-
-                        while (null != (line = bufferedReader.readLine())) {
-                            String regex = "[0-9]{3}";
-                            Pattern pattern = Pattern.compile(regex);
-                            Matcher matcher = pattern.matcher(line);
-                            if (matcher.matches()) {
-                                // is the value
-                                value = matcher.group();
-                                map.put("v", value);
-                            } else {
-                                comments = line.substring(0, line.length() - 3);
-                                key = line.substring(line.length() - 3, line.length());
-                                map.put("k", key);
-                            }
-
-                            i++;
-
-                            if (i % 2 == 0) {
-                                String generate = "gCurrencyMap.put(\"" + map.get("k") + "\", \"" + map.get("v") + "\");\r\n";
-                                map.clear();
-
-                                bufferedWriter.write(generate);
-                                bufferedWriter.newLine();
-                                bufferedWriter.flush();
-
-
-                                Log.d("********", generate + "\r\n");
-                            }
-                        }
-                        inputStream.close();
-                        inputStreamReader.close();
-                        bufferedReader.close();
-
-                        bufferedWriter.close();
-                        outputStreamWriter.close();
-                        outputStream.close();
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
             }
         });
+    }
+
+    /**
+     * get out put for the currency code and number map
+     */
+    private void getOutput4Map() {
+        try {
+            File file = Environment.getExternalStorageDirectory();
+            String path = file.getAbsolutePath() + "/Download/currency.txt";
+            InputStream inputStream = new FileInputStream(path);
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+            String pathOut = file.getAbsolutePath() + "/currency_out.txt";
+            OutputStream outputStream = new FileOutputStream(pathOut, true);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
+            BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
+
+            String line;
+            int i = 0;
+
+
+            Map<String, String> map = new HashMap<String, String>();
+            try {
+                // ISO code
+                String key = "";
+                // num
+                String value = "";
+                String comments;
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while (null != (line = bufferedReader.readLine())) {
+                    String regex = "[0-9]{3}";
+                    Pattern pattern = Pattern.compile(regex);
+                    Matcher matcher = pattern.matcher(line);
+                    if (matcher.matches()) {
+                        // is the value
+                        value = matcher.group();
+                        map.put("v", value);
+                    } else {
+                        comments = line.substring(0, line.length() - 3);
+                        key = line.substring(line.length() - 3, line.length());
+                        map.put("k", key);
+                    }
+
+                    i++;
+
+                    if (i % 2 == 0) {
+                        String generate = "gCurrencyMap.put(\"" + map.get("k") + "\", \"" + map.get("v") + "\");\r\n";
+                        map.clear();
+
+                        bufferedWriter.write(generate);
+                        bufferedWriter.newLine();
+                        bufferedWriter.flush();
+
+
+                        Log.d("********", generate + "\r\n");
+                    }
+                }
+                inputStream.close();
+                inputStreamReader.close();
+                bufferedReader.close();
+
+                bufferedWriter.close();
+                outputStreamWriter.close();
+                outputStream.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
